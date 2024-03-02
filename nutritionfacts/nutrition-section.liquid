@@ -1,0 +1,303 @@
+{%- liquid 
+    assign nutrition_title = section.settings.nutrition_title
+    assign nutrition_header = section.settings.nutrition_header
+    assign ingredient_title = section.settings.ingredient_title
+    
+    assign nutrition_per_serving  = product.metafields.custom[section.settings.nutrition_per_serving].value
+    assign nutrition_facts = product.metafields.custom[section.settings.nutrition].value
+    assign ingredient_facts = product.metafields.c_f[section.settings.ingredient_facts].value
+    assign nutrition_information = product.metafields.custom[section.settings.nutrition_information].value
+    assign ingredient_information = product.metafields.custom[section.settings.ingredient_information].value
+    assign ingredient_disclaimer = product.metafields.custom[section.settings.ingredient_disclaimer].value
+
+-%}
+
+<style>
+  .ni-section
+  {
+   display: flex;
+    flex-wrap: wrap;
+    gap: 10%;
+    justify-content: center;
+  }
+
+  .nl-title h3{
+    font-size: 26px;
+    line-height: 26px;
+    color: #000000;
+  }
+  .ni-section .hr {
+    margin: 10px 0;
+    display: block;
+    border: 1px solid grey;
+}
+  p.per-serve-title {
+    margin: 0;
+    border-bottom: 1px solid grey;
+    margin-bottom: 10px;
+    font-size: 12px;
+    line-height: 21.5px;
+}
+  .nl_item_wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+  .nl_item.pr-3 {
+    padding-left: 20px;
+}
+  .nl_item_wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0px;
+    padding-bottom: 5px;
+}
+ .ni-section-col
+  {
+    width:100%;
+  }
+ .nutrition-sec-facts .nl_item_wrapper:not(:last-child) {
+    border-bottom: 1px solid lightgray;
+}
+ .ni-section  .nutrition-sec-serving .nl_item_wrapper:last-child {
+    border: none !important;
+}
+  .ingredient-sec-facts ul{
+    padding-left:0px;
+  }
+  .ingredient-sec-facts li.ingredient_item.button
+  {
+    width: auto;
+    margin: 5px 2px;
+    pointer-events:none;
+     padding: 10px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .ingredient-sec-information , .ingredient-sec-disclaimer {
+    background: {{ section.settings.ingredient_box_bg }};
+    border-radius: 8px;
+    padding: 24px;
+    font-size: 1.2rem;
+  }
+
+  .ingredient-sec-information p:first-child {
+    font-weight: 600;
+}
+.ingredient-sec-information p {
+    margin: 4px 0;
+}
+ .ingredient-sec-disclaimer {
+    margin: 25px 0px;
+}
+ #ni-section-{{ section.id }} {
+    background: {{ section.settings.section_bg}};
+    padding: 40px 0;
+}
+.nl_item {
+    font-size: 1.3rem;
+}
+.nutrition-sec_information {
+    margin-top: 40px;
+    font-size: 1.2rem;
+}
+
+@media only screen and (min-width: 720px) {
+   .ni-section-col
+  {
+    width:35%;
+  }
+}
+@media only screen and (max-width: 720px) {
+  .nl-title {
+    text-align: center;
+}
+  .ni-section-col.ingredient-pro-section {
+    margin-top: 35px;
+}
+}
+  
+</style>
+
+<div id="ni-section-{{ section.id }}" class="shopify-section">
+  <div class="container">
+   <div class="ni-section">
+  <div class="ni-section-col nutrition-pro-section">
+    <div class="nutrition-sec-col">
+      {%- if nutrition_title != blank -%}
+      <div class="nl-title nutrition-sec-title">
+      <h3>{{ nutrition_title }}</h3>
+      <div class="hr"></div>
+      </div>
+      {%- endif -%}
+       {%- if nutrition_header != blank -%}
+      <div class="nutrition-sec-header">
+        {{ nutrition_header }}
+        <div class="hr"></div>
+      </div>
+         {%- endif -%}
+        {%- if nutrition_per_serving != blank -%}
+       <div class="nutrition-sec-serving">
+         <p class="per-serve-title">Amount per serving</p>
+             {% for nutrition_per_serv in nutrition_per_serving %}
+               <div class="nl_item_wrapper">
+                   {%- assign per_servings = nutrition_per_serv | split: "|" -%}
+                   {%- for per_serving in per_servings -%}
+                      {%- if per_serving contains '_'-%}
+                            <div class="nl_item pr-3">{{ per_serving | remove:'_' }}</div>
+                         {%- else -%}
+                           <div class="nl_item">{{ per_serving }}</div>
+                       {%- endif -%}
+                    {%- endfor -%}
+               </div>
+             {%- endfor -%}
+             <div class="hr"></div>
+      </div>
+        {%- endif -%}
+        {%- if nutrition_facts != blank -%}
+       <div class="nutrition-sec-facts">
+          {%- for nutrition_facto in nutrition_facts -%}
+            <div class="nl_item_wrapper">
+              {%- assign nutrition_factss = nutrition_facto | split: "|" -%}
+                   {%- for nutrition_fact in nutrition_factss -%}
+                       {%- if nutrition_fact contains '_'-%}
+                            <div class="nl_item pr-3">{{ nutrition_fact | remove:'_' }}</div>
+                         {%- else -%}
+                           <div class="nl_item">{{ nutrition_fact }}</div>
+                       {%- endif -%}
+                    {%- endfor -%}
+            </div>
+         {%- endfor -%}
+      </div>
+      {%- endif -%}
+      {%- if nutrition_information != blank -%}
+         <div class="nutrition-sec_information">
+           {{ nutrition_information }}
+         </div>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="ni-section-col ingredient-pro-section">
+    <div class="ingredient-sec-col">
+       {%- if ingredient_title != blank -%}
+      <div class="nl-title ingredient-sec-title">
+      <h3>{{ ingredient_title }}</h3>
+      <div class="hr"></div>
+      </div>
+         {%- endif -%}
+        {%- if ingredient_facts != blank -%}
+       <div class="ingredient-sec-facts">
+         <ul>
+         {% assign ingredient_facts = ingredient_facts | split: "," %}
+          {% for ingredient_facts in ingredient_facts %}
+             <li class="ingredient_item button button-2">{{ ingredient_facts }}</li> 
+         {% endfor %}
+           </ul>
+      </div>
+          {%- endif -%}
+      {%- if ingredient_information != blank -%}
+       <div class="ingredient-sec-information">
+         {{ ingredient_information }}
+       </div>
+       {%- endif -%}
+       {%- if ingredient_disclaimer != blank -%}
+       <div class="ingredient-sec-disclaimer">
+          {{ ingredient_disclaimer }}
+       </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+
+
+{% schema %}
+  {
+  "name": "Nutrition Ingredient",
+  "class": "nutrition-ingredient",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Nutrition"
+    },
+     {
+      "type": "text",
+      "id": "nutrition_title",
+      "label": "Nutrition Title"
+    },
+    {
+      "type": "text",
+      "id": "nutrition_header",
+      "label": "Nutrition Header",
+      "info": "Nutrition Header Metafield"
+    },
+    {
+      "type": "textarea",
+      "id": "nutrition_per_serving",
+      "label": "Nutrition Per Serving",
+      "default":"nutrition_facts_per_serving",
+      "info": "Nutrition Per Serving Metafield"
+    },
+    {
+      "type": "textarea",
+      "id": "nutrition",
+      "label": "Nutrition",
+      "default":"nutrition_facts",
+      "info": "Nutrition Facts Metafield"
+    },
+      {
+      "type": "textarea",
+      "id": "nutrition_information",
+      "default":"nutrition_information",
+      "label": "Nutrition Information Metafield"
+    },
+     {
+      "type": "header",
+      "content": "Ingredients"
+    },
+     {
+      "type": "text",
+      "id": "ingredient_title",
+      "label": "Ingredient Title"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_facts",
+      "default":"ingredients",
+      "label": "Ingredient Facts Metafield"
+    },
+     {
+      "type": "textarea",
+      "id": "ingredient_information",
+      "default":"ingredient_information",
+      "label": "Ingredient Information Metafield"
+    },
+      {
+      "type": "textarea",
+      "id": "ingredient_disclaimer",
+      "default":"ingredient_disclaimer",
+      "label": "Ingredient Disclaimer Metafield"
+    },
+      {
+      "type": "color",
+      "id": "ingredient_box_bg",
+      "default":"#edddcd",
+      "label": "Ingredient Box Background"
+    },
+      {
+      "type": "color",
+      "id": "section_bg",
+      "default":"#faf3ef",
+      "label": "Section Background Color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Nutrition Ingredient"
+    }
+  ]
+}  
+{% endschema %}
